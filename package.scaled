@@ -1,0 +1,8 @@
+   name: typescript-mode
+ source: git:https://github.com/scaled/typescript-mode.git
+version: 1.0
+descrip: Provides language support for TypeScript.
+ weburl: https://github.com/scaled/typescript-mode
+license: New BSD
+ scopts: -deprecation -feature
+ depend: git:https://github.com/scaled/textmate-grammar.git
