@@ -58,18 +58,13 @@ repository:
    patterns:
     include: #type
  comment:
-  include: #comment-block-doc
+  include: text.html.javadoc
   include: #comment-block
   include: #comment-line
  comment-block:
   multi:
    name: comment.block.ts
    begin: /\*
-   end: \*/
- comment-block-doc:
-  multi:
-   name: comment.block.documentation.ts
-   begin: /\*\*(?!/)
    end: \*/
  comment-line:
   single:

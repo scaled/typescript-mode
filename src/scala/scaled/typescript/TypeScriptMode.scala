@@ -53,7 +53,7 @@ object TypeScriptConfig extends Config.Defs {
     syntaxer("string.quoted.double", Syntax.StringLiteral)
   )
 
-  val grammars = resource(Seq("TypeScript.ndf"))(Grammar.parseNDFs)
+  val grammars = resource(Seq("HTML.ndf", "JavaDoc.ndf", "TypeScript.ndf"))(Grammar.parseNDFs)
 }
 
 @Major(name="typescript",
