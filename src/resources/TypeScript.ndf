@@ -97,7 +97,6 @@ repository:
   include: #for-in-simple
   include: #string
   include: #regex
-  include: #template
   include: #comment
   include: #literal
   include: #paren-expression
@@ -167,6 +166,7 @@ repository:
    ecaps: 0=meta.brace.round.ts
    patterns:
     include: #comment
+    include: #string
     include: #parameter-name
     include: #type-annotation
     include: #variable-initializer
@@ -365,6 +365,7 @@ repository:
  string:
   include: #qstring-single
   include: #qstring-double
+  include: #template
  string-character-escape:
   single:
    name: constant.character.escape
@@ -428,7 +429,7 @@ repository:
   include: #type-tuple
   include: #type-object
   include: #type-operator
-  include: #type-paren-or-function-type-parameters
+  include: #function-type-parameters
   include: #type-function-return-type
   include: #type-name
  type-annotation:
@@ -496,16 +497,6 @@ repository:
      pattern: \b(extends)\b
     include: #comment
     include: #type
- type-paren-or-function-type-parameters:
-  multi:
-   name: meta.type.paren.cover.ts
-   begin: (?:\b(new)\b)?\s*\(
-   bcaps: 1=keyword.control.ts
-   end: \)
-   patterns:
-    include: #comment
-    include: #type
-    include: #function-type-parameters
  type-primitive:
   single:
    name: meta.type.primitive.ts
