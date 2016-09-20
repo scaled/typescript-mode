@@ -168,3 +168,10 @@ patterns:
    single:
     pattern: \*\s*((\@)\S+)\s
     caps: 1=keyword.other.documentation.custom.javadoc 2=punctuation.definition.keyword.javadoc
+   multi:
+    name: meta.documentation.comment.javadoc
+    contentName: text.html
+    begin: \s*(?=\w)
+    end: (?=\s*\*\s*@)|(?=\s*\*\s*/)
+    patterns:
+     include: #inline
