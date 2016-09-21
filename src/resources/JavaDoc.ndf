@@ -47,7 +47,7 @@ repository:
    caps: 1=punctuation.definition.directive.begin.javadoc 2=keyword.other.documentation.directive.value.javadoc 3=punctuation.definition.keyword.javadoc 4=variable.other.javadoc 5=punctuation.definition.directive.end.javadoc
   single:
    name: meta.directive.backtick.javadoc
-   pattern: `\S*`
+   pattern: `[^`]*`
    caps: 0=constant.other.documentation.directive.value.javadoc
  invalid:
   single:
