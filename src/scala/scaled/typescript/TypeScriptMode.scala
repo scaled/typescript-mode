@@ -6,15 +6,15 @@ package scaled.typescript
 
 import scaled._
 import scaled.code.{CodeConfig, Commenter}
-import scaled.grammar.{Grammar, GrammarConfig, GrammarCodeMode}
-import scaled.util.Paragrapher
+import scaled.grammar._
 
-object TypeScriptConfig extends Config.Defs {
+@Plugin(tag="textmate-grammar")
+class TypeScriptGrammarPlugin extends GrammarPlugin {
   import CodeConfig._
-  import GrammarConfig._
 
-  // map TextMate grammar scopes to Scaled style definitions
-  val effacers = List(
+  override def grammars = Map("source.ts" -> "TypeScript.ndf")
+
+  override def effacers = List(
     effacer("comment.line", commentStyle),
     effacer("comment.block", docStyle),
     effacer("constant", constantStyle),
@@ -45,15 +45,12 @@ object TypeScriptConfig extends Config.Defs {
     effacer("variable", variableStyle)
   )
 
-  // map TextMate grammar scopes to Scaled syntax definitions
-  val syntaxers = List(
+  override def syntaxers = List(
     syntaxer("comment.line", Syntax.LineComment),
     syntaxer("comment.block", Syntax.DocComment),
     syntaxer("constant", Syntax.OtherLiteral),
     syntaxer("string.quoted.double", Syntax.StringLiteral)
   )
-
-  val grammars = resource(Seq("HTML.ndf", "JavaDoc.ndf", "TypeScript.ndf"))(Grammar.parseNDFs)
 }
 
 @Major(name="typescript",
@@ -65,11 +62,7 @@ class TypeScriptMode (env :Env) extends GrammarCodeMode(env) {
   import CodeConfig._
   import scaled.util.Chars._
 
-  override def configDefs = TypeScriptConfig :: super.configDefs
-
-  override def grammars = TypeScriptConfig.grammars.get
-  override def effacers = TypeScriptConfig.effacers
-  override def syntaxers = TypeScriptConfig.syntaxers
+  override def langScope = "source.ts"
 
   override protected def createIndenter = new TypeScriptIndenter(config)
 
