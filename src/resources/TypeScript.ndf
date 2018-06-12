@@ -1,5 +1,5 @@
 name: TypeScript
-scopeName: source.ts
+scopeName: source.typescript
 repository:
  access-modifier:
   single:

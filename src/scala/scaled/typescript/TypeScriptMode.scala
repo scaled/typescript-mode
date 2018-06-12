@@ -12,7 +12,7 @@ import scaled.grammar._
 class TypeScriptGrammarPlugin extends GrammarPlugin {
   import CodeConfig._
 
-  override def grammars = Map("source.ts" -> "TypeScript.ndf")
+  override def grammars = Map("source.typescript" -> "TypeScript.ndf")
 
   override def effacers = List(
     effacer("comment.line", commentStyle),
@@ -55,14 +55,14 @@ class TypeScriptGrammarPlugin extends GrammarPlugin {
 
 @Major(name="typescript",
        tags=Array("code", "project", "typescript"),
-       pats=Array(".*\\.ts"),
+       pats=Array(".*\\.ts", ".*\\.tsx"),
        ints=Array("typescript"),
        desc="A major editing mode for the TypeScript language.")
 class TypeScriptMode (env :Env) extends GrammarCodeMode(env) {
   import CodeConfig._
   import scaled.util.Chars._
 
-  override def langScope = "source.ts"
+  override def langScope = "source.typescript"
 
   override protected def createIndenter = new TypeScriptIndenter(config)
 
