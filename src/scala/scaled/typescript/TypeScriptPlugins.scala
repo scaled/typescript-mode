@@ -56,8 +56,8 @@ object TypeScriptPlugins {
     def suffs (root :Project.Root) = Set("ts", "tsx")
     def canActivate (root :Project.Root) =
       Files.exists(root.path.resolve(TSConfigFile))
-    def createClient (metaSvc :MetaService, root :Project.Root) =
-      Future.success(new TypeScriptLangClient(metaSvc, root.path, serverCmd(root.path)))
+    def createClient (proj :Project) = Future.success(
+      new TypeScriptLangClient(proj.metaSvc, proj.root.path, serverCmd(proj.root.path)))
   }
 
   private def serverCmd (root :Path) :Seq[String] = {
