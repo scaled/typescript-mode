@@ -11,8 +11,10 @@ class TypeScriptIndenter (cfg :Config) extends Indenter.ByBlock(cfg) {
   import Indenter._
 
   override def computeIndent (state :State, base :Int, info :Info) = {
+    // pop case statements out one indentation level
+    if (info.startsWith(caseColonM)) base - indentWidth
     // bump extends/with in two indentation levels
-    if (info.startsWith(extendsOrWithM)) base + 2*indentWidth
+    else if (info.startsWith(extendsOrWithM)) base + 2*indentWidth
     // if we're in a faux case block...
     else if (state.isInstanceOf[CaseS]) {
       // ignore the block indent for subsequent case statements
@@ -176,6 +178,7 @@ class TypeScriptIndenter (cfg :Config) extends Indenter.ByBlock(cfg) {
 
   private val caseArrowM = Matcher.regexp("""case\s.*=>""")
   private val lambdaArrowM = Matcher.exact(" =>")
+  private val caseColonM = Matcher.regexp("(case\\s|default).*:")
   private val extendsOrWithM = Matcher.regexp("""(extends|with)\b""")
   private val singleLineBlockM = Matcher.regexp("""(if|else if|else|while)\b""")
 
