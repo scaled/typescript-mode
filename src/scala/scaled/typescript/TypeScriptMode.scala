@@ -5,7 +5,8 @@
 package scaled.typescript
 
 import scaled._
-import scaled.code.{CodeConfig, Commenter}
+import scaled.Matcher
+import scaled.code.{CodeConfig, Commenter, BlockIndenter}
 import scaled.grammar._
 
 @Plugin(tag="textmate-grammar")
@@ -64,7 +65,20 @@ class TypeScriptMode (env :Env) extends GrammarCodeMode(env) {
 
   override def langScope = "source.typescript"
 
-  override protected def createIndenter = new TypeScriptIndenter(config)
+  override protected def createIndenter = new BlockIndenter(config, Std.seq(
+    // bump extends/implements in two indentation levels
+    BlockIndenter.adjustIndentWhenMatchStart(Matcher.regexp("(extends|implements)\\b"), 2),
+    // align changed method calls under their dot
+    new BlockIndenter.AlignUnderDotRule(),
+    // handle javadoc and block comments
+    new BlockIndenter.BlockCommentRule(),
+    // handle indenting switch statements properly
+    new BlockIndenter.SwitchRule(),
+    // handle continued statements, with some special sauce for : after case
+    new BlockIndenter.CLikeContStmtRule(),
+    // handle indenting lambda blocks
+    new BlockIndenter.LambdaBlockRule(" =>")
+  ))
 
   override val commenter = new Commenter() {
     override def linePrefix  = "//"
