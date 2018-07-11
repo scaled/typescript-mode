@@ -54,6 +54,12 @@ class TypeScriptGrammarPlugin extends GrammarPlugin {
   )
 }
 
+object TypeScriptConfig extends Config.Defs {
+
+  @Var("If true, cases inside switch blocks are indented one step.")
+  val indentCaseBlocks = key(true)
+}
+
 @Major(name="typescript",
        tags=Array("code", "project", "typescript"),
        pats=Array(".*\\.ts", ".*\\.tsx"),
@@ -73,7 +79,9 @@ class TypeScriptMode (env :Env) extends GrammarCodeMode(env) {
     // handle javadoc and block comments
     new BlockIndenter.BlockCommentRule(),
     // handle indenting switch statements properly
-    new BlockIndenter.SwitchRule(),
+    new BlockIndenter.SwitchRule() {
+      override def indentCaseBlocks = config(TypeScriptConfig.indentCaseBlocks)
+    },
     // handle continued statements, with some special sauce for : after case
     new BlockIndenter.CLikeContStmtRule(),
     // handle indenting lambda blocks
