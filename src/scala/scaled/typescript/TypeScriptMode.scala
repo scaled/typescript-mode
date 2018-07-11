@@ -70,6 +70,7 @@ class TypeScriptMode (env :Env) extends GrammarCodeMode(env) {
   import scaled.util.Chars._
 
   override def langScope = "source.typescript"
+  override def configDefs = TypeScriptConfig :: super.configDefs
 
   override protected def createIndenter = new BlockIndenter(config, Std.seq(
     // bump extends/implements in two indentation levels
