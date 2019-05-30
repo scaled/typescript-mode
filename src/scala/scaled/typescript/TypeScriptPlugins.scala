@@ -14,7 +14,20 @@ object TypeScriptPlugins {
   val PackageFile = "package.json"
 
   @Plugin(tag="project-root")
-  class TSConfigRootPlugin extends RootPlugin.File(TSConfigFile)
+  class TSConfigRootPlugin extends RootPlugin.File(TSConfigFile) {
+    override protected def createRoot (paths :List[Path], path :Path) = {
+      if (Files.exists(path.resolve(PackageFile))) Project.Root(path)
+      else {
+        var module = s"${path.getFileName()}"
+        var root = path.getParent()
+        while (root != null && !Files.exists(root.resolve(PackageFile))) {
+          module = s"${path.getFileName()}/${module}"
+          root = path.getParent()
+        }
+        if (root == null) Project.Root(path) else Project.Root(root, module)
+      }
+    }
+  }
 
   /** Extract projects metadata from `package.json` and `tsconfig.json` files. */
   @Plugin(tag="project-resolver")
@@ -29,8 +42,11 @@ object TypeScriptPlugins {
       val pkgFile = rootPath.resolve(PackageFile)
       val config = Json.parse(Files.newBufferedReader(pkgFile)).asObject
 
-      val projName = Option(config.get("name")).map(_.asString).
+      val mod = project.root.module
+      val modPath = if (mod == "") project.root.path else project.root.path.resolve(mod)
+      val baseName = Option(config.get("name")).map(_.asString).
         getOrElse(rootPath.getFileName.toString)
+      val projName = if (mod == "") baseName else s"${baseName}-${mod}"
 
       val sb = Ignorer.stockIgnores
       sb += Ignorer.ignorePath(project.root.path.resolve("node_modules"), project.root.path)
@@ -41,7 +57,7 @@ object TypeScriptPlugins {
       project.addComponent(classOf[Filer], new DirectoryFiler(project, sb))
 
       // TODO: package.json doesn't define source directories, so we hack some stuff
-      val sourceDirs = Seq("src", "test").map(rootPath.resolve(_))
+      val sourceDirs = Seq("src", "test").map(modPath.resolve(_))
       project.addComponent(classOf[Sources], new Sources(sourceDirs))
 
       val oldMeta = project.metaV()
@@ -54,8 +70,7 @@ object TypeScriptPlugins {
   @Plugin(tag="langserver")
   class TypeScriptLangPlugin extends LangPlugin {
     def suffs (root :Project.Root) = Set("ts", "tsx")
-    def canActivate (root :Project.Root) =
-      Files.exists(root.path.resolve(TSConfigFile))
+    def canActivate (root :Project.Root) = Files.exists(root.path.resolve(TSConfigFile))
     def createClient (proj :Project) = Future.success(
       new TypeScriptLangClient(proj.metaSvc, proj.root.path, serverCmd(proj.root.path)))
   }
