@@ -35,7 +35,7 @@ object TypeScriptPlugins {
 
     override def metaFiles (root :Project.Root) = Seq(root.path.resolve(TSConfigFile))
 
-    def addComponents (project :Project) {
+    def addComponents (project :Project) :Unit = {
       val rootPath = project.root.path
       // we trigger on tsconfig.json (which is how we know it's a TypeScript project) but we
       // extract metadata from package.json
